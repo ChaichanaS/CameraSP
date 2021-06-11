@@ -1,6 +1,7 @@
 from ui import Ui_MainWindow
 from ConnectSock import ConnectRobot
 import time
+import threading
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtWidgets import QFileDialog, QTableWidgetItem,QHeaderView,QLineEdit,QItemDelegate,QVBoxLayout,QTableWidget,QWidget
 from PyQt5.QtGui import QPixmap, QImage, QColor,QPainter, QPen,QDoubleValidator
@@ -15,6 +16,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
         self.Btn_Connect.clicked.connect(self.UseCamera)
+        self.Btn_Inspect.clicked.connect(self.Run)
 
     def Connect_Camera(self,IP,Port):
         Robot = ConnectRobot(IP,Port)
@@ -28,6 +30,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def UseCamera(self):
         self.Connect_Camera(self.IP_Server.text(),int(self.Port.text()))
         print("IP is  {} Port is {} ".format(self.IP_Server.text(),self.Port.text()))
+    def Inspecttion(self):
+        while True:
+            self.UseCamera()
+    def Run(self):
+        self.t1 = threading.Thread(target=self.Inspecttion)
+        self.t1.daemon = True
+        self.t1.start()
+
+
+
 
 
 
